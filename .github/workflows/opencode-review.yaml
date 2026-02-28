@@ -18,7 +18,6 @@ jobs:
        (contains(github.event.comment.body, '@review-my-code-bot') ||
         contains(github.event.comment.body, '@rmc-bot')))
     runs-on: ubuntu-latest
-    if: ${{ secrets.OPENROUTER_API_KEY != '' }}
 
     permissions:
       pull-requests: write
@@ -35,6 +34,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Review My Code, OpenCode!
+        if: ${{ secrets.OPENROUTER_API_KEY != '' }}
         uses: tomsjansons/rmc-oc@latest
         with:
           openrouter_api_key: ${{ secrets.OPENROUTER_API_KEY }}
