@@ -14,29 +14,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate YAML files
-        run: |
-          # Check YAML syntax using Python
-          python3 -c "
-          import yaml
-          import sys
-          from pathlib import Path
-          
-          errors = []
-          for f in Path('.').rglob('*.yaml'):
-              try:
-                  with open(f) as file:
-                      yaml.safe_load_all(file)
-              except yaml.YAMLError as e:
-                  errors.append(f'{f}: {e}')
-          
-          if errors:
-              print('YAML Errors found:')
-              for e in errors:
-                  print(e)
-              sys.exit(1)
-          print('All YAML files are valid!')
-          "
+      - name: Run YAML validation
+        uses: mgrzyb/test-yamls@v1
+        with:
+          sources: |
+            infrastructure/
+            apps/
+            monitoring/
 
   lint-kustomize:
     name: Kustomize build check
