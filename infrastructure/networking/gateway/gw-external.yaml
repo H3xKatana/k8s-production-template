@@ -1,0 +1,30 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gateway-external
+  namespace: gateway
+spec:
+  addresses:
+  - type: IPAddress
+    value: 10.0.0.6
+  gatewayClassName: traefik
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "*.dev-cluster.hawiyat.cloud"
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.dev-cluster.hawiyat.cloud"
+      tls:
+        certificateRefs:
+          - name: cert-dev-cluster
+            kind: Secret
+            group: "" # required
+      allowedRoutes:
+        namespaces:
+          from: All
