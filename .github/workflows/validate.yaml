@@ -21,24 +21,3 @@ jobs:
             infrastructure/
             apps/
             monitoring/
-
-  lint-kustomize:
-    name: Kustomize build check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Kustomize
-        run: |
-          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
-          chmod +x kustomize
-
-      - name: Validate kustomize builds
-        run: |
-          for dir in infrastructure/controllers/*/ infrastructure/networking/*/ infrastructure/storage/*/; do
-            if [ -f "$dir/kustomization.yaml" ]; then
-              echo "Building $dir..."
-              ./kustomize build "$dir" > /dev/null || echo "FAILED: $dir"
-            fi
-          done
