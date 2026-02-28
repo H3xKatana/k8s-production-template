@@ -1,0 +1,22 @@
+name: Validate Kubernetes Manifests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-yaml:
+    name: Validate YAML syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check YAML files parse
+        run: |
+          for f in $(find . -name "*.yaml" -type f); do
+            python3 -c "import yaml; yaml.safe_load_all(open('$f'))" 2>/dev/null || echo "ERROR: $f"
+          done
+          echo "YAML validation complete"

@@ -1,0 +1,43 @@
+name: OpenCode Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    if: |
+      (github.event_name == 'pull_request' && 
+       (github.event.pull_request.draft == false ||
+        contains(github.event.pull_request.body, '@review-my-code-bot') ||
+        contains(github.event.pull_request.body, '@rmc-bot'))) ||
+      (github.event_name == 'issue_comment' && 
+       github.event.issue.pull_request && 
+       (contains(github.event.comment.body, '@review-my-code-bot') ||
+        contains(github.event.comment.body, '@rmc-bot')))
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout PR head for comment events
+        if: github.event_name == 'issue_comment'
+        run: gh pr checkout ${{ github.event.issue.number }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Review My Code, OpenCode!
+        if: ${{ secrets.OPENROUTER_API_KEY != '' }}
+        uses: tomsjansons/rmc-oc@latest
+        with:
+          openrouter_api_key: ${{ secrets.OPENROUTER_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          problem_score_threshold: '7'
+          blocking_score_threshold: '9'
