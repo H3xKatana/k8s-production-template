@@ -15,9 +15,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run YAML validation
-        uses: mgrzyb/test-yamls@v1
+        uses: frenck/action-yamllint@v1
         with:
-          sources: |
+          files: |
             infrastructure/
             apps/
             monitoring/
