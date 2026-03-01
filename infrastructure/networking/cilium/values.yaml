@@ -57,14 +57,6 @@ envoy:
     capabilities:
       keepCapNetBindService: true
       envoy: [ NET_ADMIN, PERFMON, BPF ]
-hubble:
-  enabled: true
-  relay:
-    enabled: true
-    rollOutPods: true
-  ui:
-    enabled: true
-    rollOutPods: true
 ingressController:
   enabled: false
   default: true
